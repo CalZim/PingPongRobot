@@ -10,15 +10,12 @@ void powerLaunchMotors(){
 }
 
 
-//feed one projectile to the launch motors
-void feedSingle(){
-  openFeed(FEEDANGLE);
-  closeFeed(FEEDANGLE);
+//feeds x projectiles to the launch motors
+void feedAmmo(int ammount){
+  //should turn a tiny bit less than 90 degrees
+  openFeed();
+  delay(SINGLEMILLIS*ammount);
+  closeFeed();
 }
 
-//opens the feed servo for the inputed milliseconds
-void feedMulti(int millisOpen){
-  openFeed(FEEDANGLE);
-  delay(millisOpen);
-  closeFeed(FEEDANGLE);
-}
+
