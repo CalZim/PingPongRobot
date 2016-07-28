@@ -4,7 +4,7 @@
 
 Servo feedServo;
 
-const int SINGLEMILLIS = 110; //how long will the servo be rotated in milliseconds to drop 1 projectile
+const int SINGLEMILLIS = 90; //how long will the servo be rotated in milliseconds to drop 1 projectile
 
 void setup() {
   setupMotors();
