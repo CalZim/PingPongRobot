@@ -1,15 +1,14 @@
 //allows projectiles to be fed into the launching motors
-void openFeed(int angle) {
-  for (int pos = 0; pos <= angle; pos += 1) {
-    feedServo.write(pos);
-    delay(2);
-  }
+
+//continues servos are written like  so:
+// 90 = off
+// smaller than 90 = reverse
+// greater than 90 = forward
+// 
+void openFeed() {
+  feedServo.write(180);
 }
 //blocks projectiles from being fed into the launching motors
-void closeFeed(int angle) {
-  for (int pos = angle; pos >= 0; pos -= 1) { 
-    feedServo.write(pos);
-    delay(2);
-  }
+void closeFeed() {
+  feedServo.write(85); //should be reverse, but is more like a breaking system so that balls don't leave whilst closed
 }
-
