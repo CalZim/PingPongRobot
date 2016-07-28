@@ -12,7 +12,7 @@ void powerLaunchMotors(){
 
 //feeds x projectiles to the launch motors
 void feedAmmo(int ammount){
-  //should turn a tiny bit less than 90 degrees
+  //should turn a bit less than 90 degrees at ammount = 1
   openFeed();
   delay(SINGLEMILLIS*ammount);
   closeFeed();
