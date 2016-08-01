@@ -1,9 +1,9 @@
 #include <Servo.h>
 #define launchMotors 12
 #define feedServoPin 11
-
+#define yawServoPin 6
 Servo feedServo;
-
+Servo yawServo;
 const int SINGLEMILLIS = 90; //how long will the servo be rotated in milliseconds to drop 1 projectile
 
 void setup() {
