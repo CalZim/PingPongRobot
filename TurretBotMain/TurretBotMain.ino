@@ -15,6 +15,7 @@ void setup() {
 }
 
 void loop() {
-  feedAmmo(1);
+  killYaw();
+  //feedAmmo(1);
   delay(1000);
 }
