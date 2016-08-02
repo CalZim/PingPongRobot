@@ -9,10 +9,8 @@
  * ----------------------------------------------------------------------------
  */
 
-import processing.serial.*;
-import SimpleOpenNI.*;
-Serial portObj; //create the port object
 
+import SimpleOpenNI.*;
 
 SimpleOpenNI context;
 float        zoomF =0.5f;
@@ -36,7 +34,7 @@ color[]       userClr = new color[] {
 };
 
 void setup(){
-  portObj = new Serial(this, 9600);
+
   size(1024, 768, P3D);
   context = new SimpleOpenNI(this);
   kinectSetup();
@@ -45,8 +43,7 @@ void setup(){
   perspective(radians(45), float(width)/float(height), 10, 150000);
 }
 
-void draw()
-{
+void draw(){
   // update the cam
   context.update();
 
@@ -68,13 +65,10 @@ void draw()
 
   // draw the pointcloud
   beginShape(POINTS);
-  for (int y=0; y < context.depthHeight (); y+=steps)
-  {
-    for (int x=0; x < context.depthWidth (); x+=steps)
-    {
+  for (int y=0; y < context.depthHeight (); y+=steps){
+    for (int x=0; x < context.depthWidth (); x+=steps){
       index = x + y * context.depthWidth();
-      if (depthMap[index] > 0)
-      { 
+      if (depthMap[index] > 0){ 
         // draw the projected point
         realWorldPoint = context.depthMapRealWorld()[index];
         strokeWeight(3);
@@ -97,8 +91,7 @@ void draw()
       drawSkeleton(userList[i]);
 
     // draw the center of mass
-    if (context.getCoM(userList[i], com))
-    {
+    if (context.getCoM(userList[i], com)){
       stroke(100, 255, 0);
       strokeWeight(1);
       beginShape(LINES);
@@ -169,140 +162,14 @@ void drawSkeleton(int userId)
   strokeWeight(1);
 }
 
-void drawLimb(int userId, int jointType1, int jointType2)
-{
-  PVector jointPos1 = new PVector();
-  PVector jointPos2 = new PVector();
-  float  confidence;
 
-  // draw the joint position
-  confidence = context.getJointPositionSkeleton(userId, jointType1, jointPos1);
-  confidence = context.getJointPositionSkeleton(userId, jointType2, jointPos2);
 
-  stroke(255, 0, 0, confidence * 200 + 55);
-  line(jointPos1.x, jointPos1.y, jointPos1.z, 
-  jointPos2.x, jointPos2.y, jointPos2.z);
 
-  drawJointOrientation(userId, jointType1, jointPos1, 50);
-}
-
-void drawJointOrientation(int userId, int jointType, PVector pos, float length)
-{
-  // draw the joint orientation  
-  PMatrix3D  orientation = new PMatrix3D();
-  float confidence = context.getJointOrientationSkeleton(userId, jointType, orientation);
-  if (confidence < 0.001f) 
-    // nothing to draw, orientation data is useless
-    return;
-
-  pushMatrix();
-  translate(pos.x, pos.y, pos.z);
-
-  // set the local coordsys
-  applyMatrix(orientation);
-
-  // coordsys lines are 100mm long
-  // x - r
-  stroke(255, 0, 0, confidence * 200 + 55);
-  line(0, 0, 0, 
-  length, 0, 0);
-  // y - g
-  stroke(0, 255, 0, confidence * 200 + 55);
-  line(0, 0, 0, 
-  0, length, 0);
-  // z - b    
-  stroke(0, 0, 255, confidence * 200 + 55);
-  line(0, 0, 0, 
-  0, 0, length);
-  popMatrix();
-}
 
 // -----------------------------------------------------------------
 // SimpleOpenNI user events
 
-void onNewUser(SimpleOpenNI curContext, int userId)
-{
-  println("onNewUser - userId: " + userId);
-  println("\tstart tracking skeleton");
-
-  context.startTrackingSkeleton(userId);
-}
-
-void onLostUser(SimpleOpenNI curContext, int userId)
-{
-  println("onLostUser - userId: " + userId);
-}
-
-void onVisibleUser(SimpleOpenNI curContext, int userId)
-{
-  //println("onVisibleUser - userId: " + userId);
-}
 
 
-// -----------------------------------------------------------------
-// Keyboard events
 
-void keyPressed()
-{
-  switch(key)
-  {
-  case ' ':
-    context.setMirror(!context.mirror());
-    break;
-  }
-
-  switch(keyCode)
-  {
-  case LEFT:
-    rotY += 0.1f;
-    break;
-  case RIGHT:
-    // zoom out
-    rotY -= 0.1f;
-    break;
-  case UP:
-    if (keyEvent.isShiftDown())
-      zoomF += 0.01f;
-    else
-      rotX += 0.1f;
-    break;
-  case DOWN:
-    if (keyEvent.isShiftDown())
-    {
-      zoomF -= 0.01f;
-      if (zoomF < 0.01)
-        zoomF = 0.01;
-    } else
-      rotX -= 0.1f;
-    break;
-  }
-}
-
-void getBodyDirection(int userId, PVector centerPoint, PVector dir)
-{
-  PVector jointL = new PVector();
-  PVector jointH = new PVector();
-  PVector jointR = new PVector();
-  float  confidence;
-
-  // draw the joint position
-  confidence = context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_LEFT_SHOULDER, jointL);
-  confidence = context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_HEAD, jointH);
-  confidence = context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_RIGHT_SHOULDER, jointR);
-
-  // take the neck as the center point
-  confidence = context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_NECK, centerPoint);
-
-  /*  // manually calc the centerPoint
-   PVector shoulderDist = PVector.sub(jointL,jointR);
-   centerPoint.set(PVector.mult(shoulderDist,.5));
-   centerPoint.add(jointR);
-   */
-
-  PVector up = PVector.sub(jointH, centerPoint);
-  PVector left = PVector.sub(jointR, centerPoint);
-
-  dir.set(up.cross(left));
-  dir.normalize();
-}
 
