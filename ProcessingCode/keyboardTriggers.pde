@@ -5,6 +5,20 @@ void keyPressed()
   case ' ':
     context.setMirror(!context.mirror());
     break;
+  case 'a':
+    myPort.write('L');
+    //background(255);
+    break;
+  case 'd':
+    myPort.write('R');
+    //clear();
+    break;
+  case 's':
+    myPort.write('S');
+    break;
+  case 'w':
+    myPort.write('F');
+    break;
   }
 
   switch(keyCode)

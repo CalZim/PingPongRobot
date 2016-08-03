@@ -12,6 +12,9 @@
 
 import SimpleOpenNI.*;
 
+import processing.serial.*; //Serial import so we can control arduino with processsing
+Serial myPort;  // Create object from Serial class
+
 SimpleOpenNI context;
 float        zoomF =0.5f;
 float        rotX = radians(180);  // by default rotate the hole scene 180deg around the x-axis, 
@@ -34,13 +37,15 @@ color[]       userClr = new color[] {
 };
 
 void setup(){
-
+  
   size(1024, 768, P3D);
   context = new SimpleOpenNI(this);
   kinectSetup();
   stroke(255, 255, 255);
   smooth();  
   perspective(radians(45), float(width)/float(height), 10, 150000);
+  String portName = Serial.list()[0];
+  myPort = new Serial(this, portName, 9600);
 }
 
 void draw(){
@@ -103,6 +108,7 @@ void draw(){
 
       vertex(com.x, com.y, com.z - 15);
       vertex(com.x, com.y, com.z + 15);
+      println("X SHIT: " + com.x + "     Z SHIT: " + com.z);
       endShape();
 
       fill(0, 255, 100);
@@ -150,24 +156,13 @@ void drawSkeleton(int userId)
   stroke(255, 200, 200);
   line(bodyCenter.x, bodyCenter.y, bodyCenter.z, 
   bodyDir.x, bodyDir.y, bodyDir.z);
-    println(bodyCenter.x);
-  if(bodyCenter.x > 0){
-    println("TurnLeft");
-  }
-  if(bodyCenter.x < 0){
-    println("TurnRight");
-  }
+    //println(bodyCenter.x); MARKER DON'T LOSE THIS SHIT RIGHT HERE M8
+ 
   
 
   strokeWeight(1);
 }
 
-
-
-
-
-// -----------------------------------------------------------------
-// SimpleOpenNI user events
 
 
 
