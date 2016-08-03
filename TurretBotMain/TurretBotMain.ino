@@ -31,7 +31,8 @@ void loop() {
   } else if (val == 'S') {
     digitalWrite(testLED, LOW);
     killYaw();
-  } else {
+  } else{
+    
     killYaw();
   }
   delay(20);

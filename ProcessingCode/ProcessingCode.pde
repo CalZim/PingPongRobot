@@ -62,7 +62,7 @@ void draw(){
 
   int[]   depthMap = context.depthMap();
   int[]   userMap = context.userMap();
-  int     steps   = 2;  // to speed up the drawing, draw every second point
+  int     steps   =  2;  // to speed up the drawing, draw every second point
   int     index;
   PVector realWorldPoint;
 
@@ -89,6 +89,8 @@ void draw(){
   endShape();
 
   // draw the skeleton if it's available
+  int tempX;
+  int maxZ;
   int[] userList = context.getUsers();
   for (int i=0; i<userList.length; i++)
   {
@@ -109,12 +111,15 @@ void draw(){
       vertex(com.x, com.y, com.z - 15);
       vertex(com.x, com.y, com.z + 15);
       println("X SHIT: " + com.x + "     Z SHIT: " + com.z);
+      
       endShape();
 
       fill(0, 255, 100);
       text(Integer.toString(userList[i]), com.x, com.y, com.z);
     }
   }    
+  if(com.x < -50) myPort.write('L');
+      if(com.x > 50) myPort.write('R');
 
   // draw the kinect cam
   context.drawCamFrustum();
